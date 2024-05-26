@@ -13,6 +13,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private float _gravity = -20f;
     [SerializeField] private float _jumpHeight = 2f;
+   private float _runSpeedMultiplier = 1f;
 
     private float _xEuler;
     private Vector3 _velocity;
@@ -31,7 +32,18 @@ public class PlayerMove : MonoBehaviour
         float v = Input.GetAxisRaw("Vertical");
         Vector3 inputVector = new Vector3(h,0, v);   
         inputVector = Vector3.ClampMagnitude(inputVector, 1);
-        Vector3 velocity = inputVector * _speed;
+
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            _runSpeedMultiplier = 2.5f;
+        }
+        else
+        {
+            _runSpeedMultiplier = 1f;
+        }
+
+        Vector3 velocity = inputVector * _speed * _runSpeedMultiplier;
         Vector3 worldVelocity = transform.TransformVector(velocity);
 
         _velocity.y += _gravity * Time.deltaTime;
