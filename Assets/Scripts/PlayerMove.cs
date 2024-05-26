@@ -52,7 +52,7 @@ public class PlayerMove : MonoBehaviour
 
         _characterController.Move(_velocity * Time.deltaTime);
 
-        if (Input.GetKey(KeyCode.LeftControl) || CheckHeight() == false)
+        if (Input.GetKey(KeyCode.LeftControl) || !CheckAllowStay())
         {
             _characterController.height = Mathf.Lerp(_characterController.height, 0.8f, Time.deltaTime * 5f);
             _characterController.center = Vector3.Lerp(_characterController.center, new Vector3(0f, 0.4f, 0f), Time.deltaTime * 10f);
@@ -74,7 +74,7 @@ public class PlayerMove : MonoBehaviour
         _velocity.y += Mathf.Sqrt(_jumpHeight * -2f * _gravity);
     }
 
-    private bool CheckHeight()
+    private bool CheckAllowStay()
     {
         RaycastHit hitDown;
         RaycastHit hitUp;
