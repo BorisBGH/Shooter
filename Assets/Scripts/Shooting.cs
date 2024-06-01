@@ -8,6 +8,7 @@ public class Shooting : MonoBehaviour
 {
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private float _fireRate = 0.1f;
+    [SerializeField] private float _damage = 20f;
     [SerializeField] private GameObject _flash;
     [SerializeField] private Animator _animator;
     [SerializeField] private GameObject _bulletMark;
@@ -35,6 +36,11 @@ public class Shooting : MonoBehaviour
         {
             GameObject bulletMark = Instantiate(_bulletMark, hit.point, Quaternion.LookRotation(hit.normal));
             bulletMark.transform.parent = hit.collider.transform;
+
+            if(hit.collider.GetComponent<EnemyBodyPart>() is EnemyBodyPart enemyBodyPart)
+            {
+                enemyBodyPart.Hit(_damage, ray.direction);
+            }
         }
 
         if (_shotCoroutine != null)

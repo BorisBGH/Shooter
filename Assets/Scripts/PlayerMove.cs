@@ -78,7 +78,7 @@ public class PlayerMove : MonoBehaviour
             _head.localPosition = Vector3.Lerp(_head.localPosition, new Vector3(0f, 1.6f, 0f), Time.deltaTime * 10f);
         }
 
-        Debug.Log(transform.position.y);
+       
     }
 
     private void Jump()
