@@ -3,23 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyStatePatrol : MonoBehaviour
+public class PatrolState : EnemyState
 {
     [SerializeField] private PatrolManager _patrolManager;
     [SerializeField] private NavMeshAgent _navMeshAgent;
 
-    private void Start()
+   
+
+    public override void Enter()
     {
+        base.Enter();
         EnemyTargetPoint targetPoint = _patrolManager.GetRandomPoint();
         _navMeshAgent.SetDestination(targetPoint.transform.position);
     }
 
-    private void Update()
+    public override void Process()
     {
+        base.Process();
         if (_navMeshAgent.remainingDistance < 0.5f)
         {
             EnemyTargetPoint targetPoint = _patrolManager.GetRandomPoint();
             _navMeshAgent.SetDestination(targetPoint.transform.position);
         }
     }
+
+   
+
+
 }
