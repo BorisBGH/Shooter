@@ -5076,6 +5076,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _patrolManager: {fileID: 1699650696}
   _navMeshAgent: {fileID: 1753782814}
+  _viewingDistance: 17.5
+  _viewingAngle: 31.5
 --- !u!195 &1753782814
 NavMeshAgent:
   m_ObjectHideFlags: 0
