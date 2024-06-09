@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private float _maxHealth = 100f;
     [SerializeField] private EnemyBodyPartsManager _bodyPartsManager;
+    [SerializeField] EnemyStateMachine _enemyStateMachine;
     private float _health;
 
     private void Awake()
@@ -20,6 +21,11 @@ public class EnemyHealth : MonoBehaviour
         if (_health <= 0 )
         {
             Die(hittenPart, direction);
+            _enemyStateMachine.StartDieState();
+        }
+        else
+        {
+            _enemyStateMachine.StartHittedState();
         }
 
     }

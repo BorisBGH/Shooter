@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyState : MonoBehaviour
 {
+    protected EnemyStateMachine _enemyStateMachine;
     public virtual void Enter()
     { }
 
