@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
 
-public class EnemyStateMachine : MonoBehaviour
+public class EnemyStateMachine : BotStateMachine
 {
     [SerializeField] private PatrolState _patrolState;
     [SerializeField] private FollowState _followState;
@@ -19,7 +19,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private EnemyState _currentState;
 
-    public void Init(PatrolManager patrolManager, Transform playerCenter, EnemyCreator enemyCreator)
+    public virtual void Init(PatrolManager patrolManager, Transform playerCenter, EnemyCreator enemyCreator)
     {
         _patrolState.Init(this, patrolManager, _navMeshAgent, playerCenter, _animator);
         _followState.Init(this, _navMeshAgent, playerCenter, _animator);
@@ -44,17 +44,17 @@ public class EnemyStateMachine : MonoBehaviour
         SetState(_patrolState);
     }
 
-    public void StartFollowState()
+    public void StartFollowState(Transform target)
     {
-        SetState(_followState);
+        SetState(_followState, target);
     }
 
-    public void StartHittedState()
+    public override void StartHittedState()
     {
         SetState(_hittedState);
     }
 
-    public void StartDieState()
+    public override void StartDieState()
     {
         SetState(_dieState);
     }
@@ -68,5 +68,15 @@ public class EnemyStateMachine : MonoBehaviour
         }
         _currentState = enemyState;
         _currentState.Enter();
+    }
+
+    private void SetState(EnemyState enemyState, Transform target)
+    {
+        if (_currentState && _currentState != enemyState)
+        {
+            _currentState.Exit();
+        }
+        _currentState = enemyState;
+        _currentState.Enter(target);
     }
 }

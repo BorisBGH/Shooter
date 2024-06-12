@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyCreator : MonoBehaviour
+public class AllyBotsCreator : MonoBehaviour
 {
     [SerializeField] private int _number;
-    [SerializeField] private EnemyStateMachine _enemyPref;
+    [SerializeField] private AllyBotStateMachine _allyBotPref;
     [SerializeField] private List<Transform> _spawnPoints = new List<Transform>();
     [SerializeField] private PatrolManager _patrolManager;
-    [SerializeField] private Transform _playerCenter;
+    private Transform _playerCenter;
 
 
 
@@ -35,7 +34,7 @@ public class EnemyCreator : MonoBehaviour
     private void CreateOne()
     {
         Transform ramdomPoint = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
-        var newEnemy = Instantiate(_enemyPref, ramdomPoint.position, ramdomPoint.rotation);
-        newEnemy.Init(_patrolManager, _playerCenter, this);
+        var newAllyBot = Instantiate(_allyBotPref, ramdomPoint.position, ramdomPoint.rotation);
+        newAllyBot.Init(_patrolManager, _playerCenter, this);
     }
 }

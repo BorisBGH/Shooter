@@ -34,7 +34,8 @@ public class HittedState : EnemyState
             yield return null;
         }
         _rig.weight = 1f;
-        _enemyStateMachine.StartFollowState();
+        _enemyStateMachine.StartPatrolState();
+     //   _enemyStateMachine.StartFollowState();
     }
 
     public override void Exit()

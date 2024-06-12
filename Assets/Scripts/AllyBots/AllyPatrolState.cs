@@ -1,29 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PatrolState : EnemyState
+public class AllyPatrolState : AllyBotState
 {
     [SerializeField] private Transform _aim;
     [SerializeField] private Transform _aimDefaultPos;
-     
+
     [SerializeField] private float _viewingDistance = 20f;
-    [SerializeField] private float _viewingAngle = 50f;    
+    [SerializeField] private float _viewingAngle = 50f;
     [SerializeField] private LayerMask _wallMask;
     private Animator _animator;
     private PatrolManager _patrolManager;
     private NavMeshAgent _navMeshAgent;
-    private Transform _playerCenter;
 
 
-    public void Init(EnemyStateMachine enemyStateMachine, PatrolManager patrolManager, NavMeshAgent navMeshAgent, Transform playerCenter, Animator animator)
+    List<EnemyStateMachine> allEnemies = new List<EnemyStateMachine>();
+    List<EnemyStateMachine> foundEnemies = new List<EnemyStateMachine>();
+
+
+    public void Init(AllyBotStateMachine allyBotStateMachine, PatrolManager patrolManager, NavMeshAgent navMeshAgent, Transform playerCenter, Animator animator)
     {
-        _enemyStateMachine = enemyStateMachine;
+        _allyBotStateMachine = allyBotStateMachine;
         _patrolManager = patrolManager;
         _navMeshAgent = navMeshAgent;
-        _playerCenter = playerCenter;
         _animator = animator;
     }
     public override void Enter()
@@ -38,6 +41,7 @@ public class PatrolState : EnemyState
     public override void Process()
     {
         base.Process();
+
         _aim.position = Vector3.Lerp(_aim.position, _aimDefaultPos.position, Time.deltaTime * 4f);
 
         if (_navMeshAgent.remainingDistance < 0.5f)
@@ -46,10 +50,12 @@ public class PatrolState : EnemyState
             _navMeshAgent.SetDestination(targetPoint.transform.position);
         }
 
-        bool canSee = SearchUtility.SearchInSector(transform.position + Vector3.up * 1.5f, transform.forward, _playerCenter.position, _viewingAngle, _viewingDistance, _wallMask);
-        if (canSee)
+        allEnemies = FindObjectsOfType<EnemyStateMachine>().ToList();
+        foundEnemies = SearchUtility.SearchEnemiesInSector(transform.position + Vector3.up * 1.5f, transform.forward, allEnemies, _viewingAngle, _viewingDistance, _wallMask);
+
+        if (foundEnemies != null && foundEnemies.Count > 0)
         {
-            _enemyStateMachine.StartFollowState();
+            _allyBotStateMachine.StartFollowState();
         }
     }
 
@@ -60,8 +66,4 @@ public class PatrolState : EnemyState
         Handles.DrawSolidArc(transform.position, Vector3.up, Quaternion.Euler(0f, -_viewingAngle, 0f) * transform.forward, _viewingAngle * 2f, _viewingDistance);
     }
 #endif
-
-
-
-
 }

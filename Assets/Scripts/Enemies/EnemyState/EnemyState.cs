@@ -8,6 +8,9 @@ public class EnemyState : MonoBehaviour
     public virtual void Enter()
     { }
 
+    public virtual void Enter(Transform target)
+    { }
+
     public virtual void Process()
     { }
 

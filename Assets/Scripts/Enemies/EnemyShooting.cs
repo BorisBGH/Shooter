@@ -50,6 +50,12 @@ public class EnemyShooting : MonoBehaviour
                 playerHealth.TakeDamage(_damage);
                 trailLength = hit.distance;
             }
+
+            if (hit.collider.GetComponent<EnemyBodyPart>() is EnemyBodyPart enemyBodyPart)
+            {
+                enemyBodyPart.Hit(_damage, ray.direction);
+                trailLength = hit.distance;
+            }
         }
         BulletTrail bulletTrail = Instantiate(_bulletTrailPref, Vector3.zero, Quaternion.identity);
         bulletTrail.Setup(_spawn.position, _spawn.position + direction * trailLength);

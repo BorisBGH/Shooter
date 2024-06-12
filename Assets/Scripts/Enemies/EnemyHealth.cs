@@ -7,7 +7,7 @@ public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private float _maxHealth = 100f;
     [SerializeField] private EnemyBodyPartsManager _bodyPartsManager;
-    [SerializeField] EnemyStateMachine _enemyStateMachine;
+    [SerializeField] BotStateMachine _enemyStateMachine;
     private float _health;
 
     private void Awake()
@@ -18,14 +18,14 @@ public class EnemyHealth : MonoBehaviour
     public void ApplyDamage(float value, EnemyBodyPart hittenPart, Vector3 direction)
     {
         _health -= value;
-        if (_health <= 0 )
+        if (_health < 0 )
         {
             Die(hittenPart, direction);
-            _enemyStateMachine.StartDieState();
+            _enemyStateMachine?.StartDieState();
         }
         else
         {
-            _enemyStateMachine.StartHittedState();
+            _enemyStateMachine?.StartHittedState();
         }
 
     }

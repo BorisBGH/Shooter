@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,8 +16,13 @@ public class FollowState : EnemyState
     private Transform _playerCenter;
     private Animator _animator;
     private Coroutine _coroutine;
-    private float _lostPlayerTimer;
-    
+    private float _lostTargetTimer;
+
+    private List<AllyBotStateMachine> _allAllies = new List<AllyBotStateMachine>();
+    private List<AllyBotStateMachine> _foundAllies = new List<AllyBotStateMachine>();
+    private AllyBotStateMachine _closestAlly;
+
+    private Transform _closestTarget;
 
     public void Init(EnemyStateMachine enemyStateMachine, NavMeshAgent navMeshAgent, Transform playerCenter, Animator animator)
     {
@@ -25,41 +31,49 @@ public class FollowState : EnemyState
         _playerCenter = playerCenter;
         _animator = animator;
     }
-    public override void Enter()
+    public override void Enter(Transform target)
     {
         base.Enter();
-        _lostPlayerTimer = 0;
-       _coroutine = StartCoroutine(Behaviour());       
+        _closestTarget = target;
+        _lostTargetTimer = 0;
+        _coroutine = StartCoroutine(Behaviour());
     }
 
     public override void Process()
     {
         base.Process();
-        _lostPlayerTimer += Time.deltaTime;
-        bool seePlayer = SearchUtility.SearchInSector(transform.position, transform.forward, _playerCenter.position, _viewingAngle, _viewingDistance, _wallMask);
-        if(seePlayer)
+        _lostTargetTimer += Time.deltaTime;
+        
+        if (_closestTarget)
         {
-            _lostPlayerTimer = 0;
+            _lostTargetTimer = 0;
         }
-        if (_lostPlayerTimer > 4f)
+        if (_lostTargetTimer > 4f)
         {
             _enemyStateMachine.StartPatrolState();
         }
-       
+
     }
+
+ 
 
     private IEnumerator Behaviour()
     {
+       
+
         while (true)
         {
             _navMeshAgent.isStopped = true;
             _animator.SetBool("Walk", false);
             _animator.SetBool("Crouch", false);
             float timer = Random.Range(.5f, 1.5f);
+
+           
+
             while (timer > 0)
             {
                 timer -= Time.deltaTime;
-                _aim.position = Vector3.Lerp(_aim.position, _playerCenter.position, Time.deltaTime * 5f);
+                _aim.position = Vector3.Lerp(_aim.position, _closestTarget.position, Time.deltaTime * 5f);
                 _enemyShooting.Process();
                 yield return null;
             }
@@ -71,12 +85,12 @@ public class FollowState : EnemyState
             while (timer > 0)
             {
                 timer -= Time.deltaTime;
-                _navMeshAgent.SetDestination(_playerCenter.position);
-                _aim.position = Vector3.Lerp(_aim.position, _playerCenter.position, Time.deltaTime * 5f);
+                _navMeshAgent.SetDestination(_closestTarget.position);
+                _aim.position = Vector3.Lerp(_aim.position, _closestTarget.position + Vector3.up * 1.2f, Time.deltaTime * 5f);
                 yield return null;
             }
             yield return null;
-        }        
+        }
     }
     public override void Exit()
     {

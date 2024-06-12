@@ -19,7 +19,7 @@ public class DieState : EnemyState
         base.Enter();
         _navMeshAgent.isStopped = true;
         Invoke(nameof(Respawn), 3f);
-
+        Destroy(gameObject, 3.1f);
     }
 
     private void Respawn()
